@@ -1,0 +1,33 @@
+name: esptool
+adopt-info: esptool
+base: core18
+summary: Tool to create and flash firmware files for the ESP8266 chip
+description: |
+  Esptool reads the compiled program in ELF format, extracts code and
+  data sections, and either dumps a section to a file or assembles the
+  firmware file from several segments. Esptool also communicates with
+  the ESP8266 bootloader to upload firmware files to flash.
+
+  Esptool can automatically put the board into UART bootloader mode
+  using a variety of methods.
+
+grade: stable
+confinement: strict
+
+apps:
+  esptool:
+    command: esptool
+    plugs:
+      - home
+      - removable-media
+      - serial-port
+
+parts:
+  esptool:
+    source: https://github.com/igrr/esptool-ck.git
+    plugin: make
+    override-build: |
+      snapcraftctl set-version "$(git describe --always)"
+      make
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      cp -av esptool $SNAPCRAFT_PART_INSTALL/bin
